@@ -86,7 +86,7 @@ export const columns: ColumnDef<Payment>[] = [
         },
     },
     {
-        id: "actions",
+        accessorKey: "actions",
         cell: ({ row }) => {
             const payment = row.original;
 
