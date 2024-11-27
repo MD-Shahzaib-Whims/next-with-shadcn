@@ -27,12 +27,6 @@ export type Payment = {
 }
 
 export const columns: ColumnDef<Payment>[] = [
-    // {
-    //     accessorKey: "email",
-    //     header: ({ column }) => (
-    //         <DataTableColumnHeader column={column} title="Email" />
-    //     ),
-    // },
     {
         id: "select",
         header: ({ table }) => (
@@ -56,6 +50,19 @@ export const columns: ColumnDef<Payment>[] = [
         enableHiding: false,
     },
     {
+        accessorKey: "email", // Added email column
+        header: ({ column }) => (
+            <Button
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                Email
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <div>{row.getValue("email")}</div>,
+    },
+    {
         accessorKey: "amount",
         header: ({ column }) => {
             return (
@@ -63,25 +70,25 @@ export const columns: ColumnDef<Payment>[] = [
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Email
+                    Amount
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
-            )
+            );
         },
         cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount"))
+            const amount = parseFloat(row.getValue("amount"));
             const formatted = new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
-            }).format(amount)
+            }).format(amount);
 
-            return <div className="text-right font-medium">{formatted}</div>
+            return <div className="text-right font-medium">{formatted}</div>;
         },
     },
     {
         id: "actions",
         cell: ({ row }) => {
-            const payment = row.original
+            const payment = row.original;
 
             return (
                 <DropdownMenu>
@@ -103,7 +110,7 @@ export const columns: ColumnDef<Payment>[] = [
                         <DropdownMenuItem>View payment details</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-            )
+            );
         },
     },
-]
+];
