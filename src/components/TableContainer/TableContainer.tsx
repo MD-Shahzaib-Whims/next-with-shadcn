@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RowData } from "@/lib/Interfaces";
 import { mockData } from "@/lib/utils";
 
@@ -14,7 +15,7 @@ const TableContainer: React.FC = () => {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
-    const rowsPerPage = 5;
+    const [rowsPerPage, setRowsPerPage] = useState<number>(5);
 
     // Filtering
     const filteredData = data.filter((row) =>
@@ -48,8 +49,14 @@ const TableContainer: React.FC = () => {
         );
     };
 
+    // Handle Rows Per Page change
+    const handleRowsPerPageChange = (value: string) => {
+        setRowsPerPage(Number(value));
+        setCurrentPage(1); // Reset to first page whenever the rows per page is changed
+    };
+
     return (
-        <div className="p-4">
+        <div className="p-4 bg-slate-600">
             {/* Filter Input */}
             <div className="mb-4 flex items-center justify-between">
                 <Input
@@ -61,6 +68,23 @@ const TableContainer: React.FC = () => {
                 <span className="text-sm">
                     Selected Rows: {selectedRows.length}
                 </span>
+            </div>
+
+            {/* Rows Per Page Dropdown */}
+            <div className="mb-4 flex justify-between items-center">
+                <Select value={rowsPerPage.toString()} onValueChange={handleRowsPerPageChange}>
+                    <SelectTrigger className="w-[80px]">
+                        <SelectValue placeholder="Rows per page:" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Rows per page:</SelectLabel>
+                            <SelectItem value="5">5</SelectItem>
+                            <SelectItem value="10">10</SelectItem>
+                            <SelectItem value="20">20</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
             </div>
 
             {/* Table */}
