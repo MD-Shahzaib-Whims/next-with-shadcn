@@ -1,9 +1,10 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { RowData } from "@/lib/Interfaces";
 import { mockData } from "@/lib/utils";
 
@@ -55,8 +56,13 @@ const TableContainer: React.FC = () => {
         setCurrentPage(1); // Reset to first page whenever the rows per page is changed
     };
 
+    // Handle Pagination Click
+    const handlePaginationClick = (page: number) => {
+        setCurrentPage(page);
+    };
+
     return (
-        <div className="p-4 bg-slate-600">
+        <div className="p-4">
             {/* Filter Input */}
             <div className="mb-4 flex items-center justify-between">
                 <Input
@@ -72,7 +78,10 @@ const TableContainer: React.FC = () => {
 
             {/* Rows Per Page Dropdown */}
             <div className="mb-4 flex justify-between items-center">
-                <Select value={rowsPerPage.toString()} onValueChange={handleRowsPerPageChange}>
+                <Select
+                    value={rowsPerPage.toString()}
+                    onValueChange={handleRowsPerPageChange}
+                >
                     <SelectTrigger className="w-[80px]">
                         <SelectValue placeholder="Rows per page:" />
                     </SelectTrigger>
@@ -134,26 +143,43 @@ const TableContainer: React.FC = () => {
             </Table>
 
             {/* Pagination Controls */}
-            <div className="flex justify-between items-center mt-4">
-                <Button
-                    variant="secondary"
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                >
-                    Previous
-                </Button>
-                <span>
-                    Page {currentPage} of {totalPages}
-                </span>
-                <Button
-                    variant="secondary"
-                    onClick={() =>
-                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    disabled={currentPage === totalPages}
-                >
-                    Next
-                </Button>
+            <div className="mt-4">
+                <Pagination>
+                    <PaginationContent>
+                        {/* Disable Previous Button on First Page */}
+                        <PaginationItem>
+                            <PaginationPrevious
+                                // href="#"
+                                // disabled={Boolean(currentPage === 1)}
+                                onClick={() =>
+                                    handlePaginationClick(Math.max(currentPage - 1, 1))
+                                }
+                            />
+                        </PaginationItem>
+
+                        {/* Page Numbers */}
+                        {Array.from({ length: totalPages }, (_, index) => (
+                            <PaginationItem key={index}>
+                                <PaginationLink
+                                    // href="#"
+                                    isActive={currentPage === index + 1}
+                                    onClick={() => handlePaginationClick(index + 1)}
+                                >
+                                    {index + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+
+                        {/* Disable Next Button on Last Page */}
+                        <PaginationItem>
+                            <PaginationNext
+                                // href="#"
+                                // disabled={currentPage === totalPages}
+                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
             </div>
         </div>
     );
