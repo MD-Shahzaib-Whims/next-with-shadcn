@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { RowData } from "@/lib/Interfaces";
-import { mockData } from "@/lib/utils";
+import { generateRandomData } from "@/lib/utils";
 
 const TableContainer: React.FC = () => {
-    const [data, setData] = useState<RowData[]>(mockData);
+    const [data, setData] = useState<RowData[]>(generateRandomData(50));
     const [currentPage, setCurrentPage] = useState(1);
     const [filterText, setFilterText] = useState("");
     const [sortColumn, setSortColumn] = useState<string>("");
@@ -53,7 +53,7 @@ const TableContainer: React.FC = () => {
     // Handle Rows Per Page change
     const handleRowsPerPageChange = (value: string) => {
         setRowsPerPage(Number(value));
-        setCurrentPage(1); // Reset to first page whenever the rows per page is changed
+        setCurrentPage(1);
     };
 
     // Handle Pagination Click
@@ -74,6 +74,13 @@ const TableContainer: React.FC = () => {
                 <span className="text-sm">
                     Selected Rows: {selectedRows.length}
                 </span>
+            </div>
+
+            {/* Generate New Data Button */}
+            <div className="mb-4">
+                <Button onClick={() => setData(generateRandomData(50))} className="mt-4">
+                    Generate New Data
+                </Button>
             </div>
 
             {/* Rows Per Page Dropdown */}
