@@ -9,7 +9,7 @@ import { RowData } from "@/lib/Interfaces";
 import { generateRandomData } from "@/lib/utils";
 
 const TableContainer: React.FC = () => {
-    const [data, setData] = useState<RowData[]>(generateRandomData(100000));
+    const [data, setData] = useState<RowData[]>(generateRandomData(10000));
     const [currentPage, setCurrentPage] = useState(1);
     const [filterText, setFilterText] = useState("");
     const [sortColumn, setSortColumn] = useState<string>("");
@@ -104,36 +104,26 @@ const TableContainer: React.FC = () => {
                     onChange={(e) => setFilterText(e.target.value)}
                     className="w-1/3"
                 />
-                <span className="text-sm">
-                    Selected Rows: {selectedRows.length}
-                </span>
-            </div>
 
-            {/* Generate New Data Button */}
-            <div className="mb-4">
-                <Button onClick={() => setData(generateRandomData(50))} className="mt-4">
-                    Generate New Data
-                </Button>
-            </div>
-
-            {/* Rows Per Page Dropdown */}
-            <div className="mb-4 flex justify-between items-center">
-                <Select
-                    value={rowsPerPage.toString()}
-                    onValueChange={handleRowsPerPageChange}
-                >
-                    <SelectTrigger className="w-[80px]">
-                        <SelectValue placeholder="Rows per page:" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel>Rows per page:</SelectLabel>
-                            <SelectItem value="5">5</SelectItem>
-                            <SelectItem value="10">10</SelectItem>
-                            <SelectItem value="20">20</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                {/* Rows Per Page Dropdown */}
+                <div className="flex justify-between items-center">
+                    <Select
+                        value={rowsPerPage.toString()}
+                        onValueChange={handleRowsPerPageChange}
+                    >
+                        <SelectTrigger className="w-[80px]">
+                            <SelectValue placeholder="Rows per page:" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Rows per page:</SelectLabel>
+                                <SelectItem value="5">5</SelectItem>
+                                <SelectItem value="10">10</SelectItem>
+                                <SelectItem value="20">20</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
             </div>
 
             {/* Table */}
@@ -162,29 +152,43 @@ const TableContainer: React.FC = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {paginatedData.map((row) => (
-                        <TableRow key={row.id} className="hover:bg-gray-100">
-                            <TableCell>
-                                <input
-                                    type="checkbox"
-                                    checked={selectedRows.includes(row.id)}
-                                    onChange={() => toggleRowSelection(row.id)}
-                                />
+                    {paginatedData.length > 0 ? (
+                        paginatedData.map((row) => (
+                            <TableRow key={row.id} className="hover:bg-gray-100">
+                                <TableCell>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedRows.includes(row.id)}
+                                        onChange={() => toggleRowSelection(row.id)}
+                                    />
+                                </TableCell>
+                                <TableCell>{row.ref}</TableCell>
+                                <TableCell>{row.pickupTime}</TableCell>
+                                <TableCell>{row.dropOff}</TableCell>
+                                <TableCell>{row.customer}</TableCell>
+                                <TableCell>{row.phone}</TableCell>
+                                <TableCell>{row.status}</TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={7} className="text-center">
+                                No data found
                             </TableCell>
-                            <TableCell>{row.ref}</TableCell>
-                            <TableCell>{row.pickupTime}</TableCell>
-                            <TableCell>{row.dropOff}</TableCell>
-                            <TableCell>{row.customer}</TableCell>
-                            <TableCell>{row.phone}</TableCell>
-                            <TableCell>{row.status}</TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
             </Table>
 
             {/* Pagination Controls */}
-            <div className="mt-4">
-                <Pagination>
+            <div className="flex flex-wrap items-center justify-between mt-4 gap-4">
+                {/* Selected Rows (hidden on smaller screens) */}
+                <span className="text-sm hidden sm:block w-auto">
+                    Selected Rows: {selectedRows.length}
+                </span>
+
+                {/* Pagination */}
+                <Pagination className="flex-1 justify-end">
                     <PaginationContent>
                         {/* Previous Button */}
                         <PaginationItem>
